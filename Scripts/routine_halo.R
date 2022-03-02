@@ -75,7 +75,7 @@ ggplot(geral,aes(x=Ano2,y=Halo,col=Sorovar))+
 ### Ertapenem ###
 
 
-summary(mod1<-lmer(Ertapenem~Ano2:Sorovar:Material+Sorovar+Material+(Ano2|Projeto),data=carol))
+summary(mod1<-lmer(Ertapenem~Ano2:Sorovar:Material+Sorovar+Material+(1|Projeto),data=carol))
 
 #ICC(mod1) Using SAS PROC MIXED to fit multilevel models, hierarchical models, and individual growth models
 # https://www.biostat.jhsph.edu/~fdominic/teaching/bio656/lectures/4.linear.randomcoeff.pdf
@@ -146,7 +146,7 @@ z4<-2*pnorm(abs(ztest1[1]-ztest1[3])/sqrt(ztest1[1,2]^2+ztest1[3,2]^2),lower.tai
 2*pt(abs(ztest1[1]-ztest1[3])/sqrt(ztest1[1,2]^2+ztest1[3,2]^2),df=82+53-4,lower.tail = F)
 
 
-summary(mod2<-lmer(Meropenem~Ano2:sorovar1:Material+sorovar1+Material+(Ano2|Projeto),data=carol))
+summary(mod2<-lmer(Meropenem~Ano2:Sorovar:Material+Sorovar+Material+(1|Projeto),data=carol))
 
 Anova(mod2)
 
@@ -203,7 +203,7 @@ z4.2<-2*pnorm(abs(ztest2[1]-ztest2[3])/sqrt(ztest2[1,2]^2+ztest2[3,2]^2),lower.t
 
 
 
-summary(mod3<-lmer(Imipenem~Ano2:sorovar1:Material+sorovar1+Material+(Ano2|Projeto),data=carol))
+summary(mod3<-lmer(Imipenem~Ano2:Sorovar:Material+Sorovar+Material+(1|Projeto),data=carol))
 
 Anova(mod3)
 
