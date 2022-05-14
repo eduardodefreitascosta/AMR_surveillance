@@ -77,226 +77,152 @@ grid.arrange(m1,m2,m3,m4)
 # A Study of Interval Censoring in Parametric Regression Models. 10.1023/A:1009681919084
 
 
+
+############
+# Colistin #
+############
+
+carol_coli<-subset(carol,id != 296 & id != 281 )
+
+
 mod1<-survreg(Surv(time=min_coli,time2=max_coli,type="interval2")~ 
-                 ano:sorovar:material+sorovar+material,data=carol,cluster=projeto,dist="exponential")
-summary(mod1)
+                 ano:sorovar:material+sorovar+material,data=carol_coli,cluster = projeto,dist = "exponential")
 
-linearHypothesis(mod1, "ano") #TC
-linearHypothesis(mod1, "ano+ano:materialFood") #TF
-linearHypothesis(mod1, "ano+ano:sorovarDerby") #DC
-linearHypothesis(mod1, "ano+ano:materialFood+ano:sorovarDerby+ano:sorovarDerby:materialFood") #DF
 
-TC1<-exp(mod1$coefficients[1]+mod1$coefficients[2]*x5) 
 
-TF1<-exp(mod1$coefficients[1]+mod1$coefficients[2]*x5+mod1$coefficients[4]+mod1$coefficients[6]*x5)
+s.mod1<-summary(mod1)
 
-DC1<-exp(mod1$coefficients[1]+mod1$coefficients[3]+(mod1$coefficients[2]+mod1$coefficients[5])*0:10)
+carol_coli$pred<-predict(mod1)
 
-DF1<-exp(mod1$coefficients[1]+mod1$coefficients[3]+mod1$coefficients[4]+mod1$coefficients[7]+
-            (mod1$coefficients[2]+mod1$coefficients[5]+mod1$coefficients[6]+mod1$coefficients[8])*0:10)
-
-
-DC1<-c(DC1,rep(NA,5))
-DF1<-c(DF1,rep(NA,5))
-
-pr.1<-cbind.data.frame(Year=x5,TC=TC1,TF=TF1,DC=DC1,DF=DF1)
-
-pr1<-pr.1%>%
-   gather(key="S:M",value="Mean MIC",-Year)
-
-pr1$Serovar<-ifelse(pr1$`S:M`=="TC1"|pr1$`S:M`=="TF1","Typhimurium", "Derby")
-pr1$Material<-ifelse(pr1$`S:M`=="TC1"|pr1$`S:M`=="DC1","Carcass", "Food")
-
-
-ggplot(pr1,aes(x=Year,y=`Mean MIC`,col=Serovar))+
-   theme_minimal()+
-   theme(text=element_text(size=21))+
-   #  facet_grid(~Material)+
-   geom_point(aes(shape = Material),size=3.5)+
-   geom_line(aes(shape = Material),size=1.5)+
-   scale_x_continuous(breaks = seq(0,16,2))+
-   scale_y_continuous(breaks = seq(0,4,0.5))+
-   xlab("Year")
-
-ggsave(here("Figures","Picture6.png"))
-
-
-carol$max_cipro1<-ifelse(carol$max_cipro=="Inf"," ",as.numeric(carol$max_cipro))
-carol$max_cipro1<-as.numeric(carol$max_cipro1)
-
-mod2<-survreg(Surv(time=min_cipro,time2=max_cipro1,type="interval2")~
-                 ano:sorovar:material+sorovar+material,data=carol,cluster=projeto,dist="exponential")
-summary(mod2)
-
-
-linearHypothesis(mod2, "ano") #TC
-linearHypothesis(mod2, "ano+ano:materialFood") #TF
-linearHypothesis(mod2, "ano+ano:sorovarDerby") #DC
-linearHypothesis(mod2, "ano+ano:materialFood+ano:sorovarDerby+ano:sorovarDerby:materialFood") #DF
-
-
-TC2<-exp(mod2$coefficients[1]+mod2$coefficients[2]*x5) 
-
-TF2<-exp(mod2$coefficients[1]+mod2$coefficients[4]+(mod2$coefficients[2]+mod2$coefficients[6])*x5)
-
-DC2<-exp(mod2$coefficients[1]+mod2$coefficients[3]+(mod2$coefficients[2]+mod2$coefficients[5])*0:10)
-
-DF2<-exp(mod2$coefficients[1]+mod2$coefficients[3]+mod2$coefficients[4]+mod2$coefficients[7]+
-            (mod2$coefficients[2]+mod2$coefficients[5]+mod2$coefficients[6]+mod2$coefficients[8])*0:10)
-
-DC2<-c(DC2,rep(NA,5))
-DF2<-c(DF2,rep(NA,5))
-
-
-
-pr.2<-cbind.data.frame(Year=x5,TC=TC2,TF=TF2,DC=DC2,DF=DF2)
-
-pr2<-pr.2%>%
-   gather(key="S:M",value="Mean MIC",-Year)
-
-pr2$Serovar<-ifelse(pr2$`S:M`=="TC2"|pr2$`S:M`=="TF2","Typhimurium", "Derby")
-pr2$Material<-ifelse(pr2$`S:M`=="TC2"|pr2$`S:M`=="DC2","Carcass", "Food")
-
-
-ggplot(pr2,aes(x=Year,y=`Mean MIC`,col=Serovar))+
-   theme_minimal()+
-   theme(text=element_text(size=21))+
-   #  facet_grid(~Material)+
-   geom_point(aes(shape = Material),size=3.5)+
-   geom_line(aes(shape = Material),size=1.5)+
-   scale_x_continuous(breaks = seq(0,16,2))+
-   scale_y_continuous(breaks = seq(0,1,0.05))+
-   xlab("Year")
-
-ggsave(here("Figures","Picture7.png"))
-
-
-
-
-mod3<-survreg(Surv(time=min_ceftaz,time2=max_ceftaz,type="interval2")~ano:sorovar:material+sorovar+material,cluster=projeto,data=carol,dist="exponential")
-summary(mod3)
-
-linearHypothesis(mod3, "ano") #TC
-linearHypothesis(mod3, "ano+ano:materialFood") #TF
-linearHypothesis(mod3, "ano+ano:sorovarDerby") #DC
-linearHypothesis(mod3, "ano+ano:materialFood+ano:sorovarDerby+ano:sorovarDerby:materialFood") #DF
-
-TC3<-exp(mod3$coefficients[1]+mod3$coefficients[2]*x5) 
-
-TF3<-exp(mod3$coefficients[1]+mod3$coefficients[4]+(mod3$coefficients[2]+mod3$coefficients[6])*x5)
-
-DC3<-exp(mod3$coefficients[1]+mod3$coefficients[3]+(mod3$coefficients[2]+mod3$coefficients[5])*0:10)
-
-DF3<-exp(mod3$coefficients[1]+mod3$coefficients[3]+mod3$coefficients[4]+mod3$coefficients[7]+
-            (mod3$coefficients[2]+mod3$coefficients[5]+mod3$coefficients[6]+mod3$coefficients[8])*0:10)
-DC3<-c(DC3,rep(NA,5))
-DF3<-c(DF3,rep(NA,5))
-
-
-pr.3<-cbind.data.frame(Year=x5,TC=TC3,TF=TF3,DC=DC3,DF=DF3)
-
-pr3<-pr.3%>%
-   gather(key="S:M",value="Mean MIC",-Year)
-
-pr3$Serovar<-ifelse(pr3$`S:M`=="TC3"|pr3$`S:M`=="TF3","Typhimurium", "Derby")
-pr3$Material<-ifelse(pr3$`S:M`=="TC3"|pr3$`S:M`=="DC3","Carcass", "Food")
-
-
-ggplot(pr3,aes(x=Year,y=`Mean MIC`,col=Serovar))+
-   theme_minimal()+
-   theme(text=element_text(size=21))+
-   #  facet_grid(~Material)+
-   geom_point(aes(shape = Material),size=3.5)+
-   geom_line(aes(shape = Material),size=1.5)+
-   scale_x_continuous(breaks = seq(0,16,2))+
-   scale_y_continuous(breaks = seq(0,1,0.05))+
-   xlab("Year")
-
-ggsave(here("Figures","Picture8.png"))
-
-
-
-
-
-mod4<-survreg(Surv(time=min_cefo,time2=max_cefo,type="interval2")~ano:sorovar:material+sorovar+material,cluster=projeto,data=carol,dist="exponential")
-summary(mod4)
-
-linearHypothesis(mod4, "ano") #TC
-linearHypothesis(mod4, "ano+ano:materialFood") #TF
-linearHypothesis(mod4, "ano+ano:sorovarDerby") #DC
-linearHypothesis(mod4, "ano+ano:materialFood+ano:sorovarDerby+ano:sorovarDerby:materialFood") #DF
-
-TC4<-exp(mod4$coefficients[1]+mod4$coefficients[2]*x5) 
-
-TF4<-exp(mod4$coefficients[1]+mod4$coefficients[4]+(mod4$coefficients[2]+mod4$coefficients[6])*x5)
-
-DC4<-exp(mod4$coefficients[1]+mod4$coefficients[3]+(mod4$coefficients[2]+mod4$coefficients[5])*0:10)
-
-DF4<-exp(mod4$coefficients[1]+mod4$coefficients[3]+mod4$coefficients[4]+mod4$coefficients[7]+
-            (mod4$coefficients[2]+mod4$coefficients[5]+mod4$coefficients[6]+mod4$coefficients[8])*0:10)
-
-DC4<-c(DC4,rep(NA,5))
-DF4<-c(DF4,rep(NA,5))
-
-
-
-pr.4<-cbind.data.frame(Year=x5,TC=TC4,TF=TF4,DC=DC4,DF=DF4)
-
-pr4<-pr.4%>%
-   gather(key="S:M",value="Mean MIC",-Year)
-
-pr4$Serovar<-ifelse(pr4$`S:M`=="TC4"|pr4$`S:M`=="TF4","Typhimurium", "Derby")
-pr4$Material<-ifelse(pr4$`S:M`=="TC4"|pr4$`S:M`=="DC4","Carcass", "Food")
-
-
-ggplot(pr4,aes(x=Year,y=`Mean MIC`,col=Serovar))+
-   theme_minimal()+
-   theme(text=element_text(size=21))+
-   #  facet_grid(~Material)+
-   geom_point(aes(shape = Material),size=3.5)+
-   geom_line(aes(shape = Material),size=1.5)+
-   scale_x_continuous(breaks = seq(0,16,2))+
-   scale_y_continuous(breaks = seq(0,0.2,0.025))+
-   xlab("Year")
-ggsave(here("Figures","Picture9.png"))
-
-
-#All plots together
-
-pred<-rbind.data.frame(pr.1,pr.2,pr.3,pr.4)
-pred$ATM<-c(rep("Colistin",16),rep("Ciprofloxacin",16),rep("Cefatazidim",16),rep("Cefotaxime",16))
-
-pred_total<-pred%>%
-   gather(key="Bacteria",value="MIC", -Year,-ATM)
-
-pred_total$serovar<-ifelse(pred_total$Bacteria=="TC"|pred_total$Bacteria=="TF","Typh","Derby")
-pred_total$matrix<-ifelse(pred_total$Bacteria=="TC"|pred_total$Bacteria=="DC","Carc","Food")
-
-
-carol1<-carol[,c(3,4,6,13,17,21,25)]
-
-carol2<-carol1%>%
-   gather(key="ATM1",value="Med_MIC",-ano,-sorovar,-material)
-
-colnames(carol2)[1]<-"Year"
-colnames(carol2)[3]<-"matrix"
-colnames(carol2)[2]<-"serovar"
-
-
-carol2$ATM<-ifelse(carol2$ATM1=="med_coli","Colistin",
-                   ifelse(carol2$ATM1=="med_cipro","Ciprofloxacin",
-                          ifelse(carol2$ATM1=="med_cefo","Cefotaxime","Cefatazidim")))
-
-
-geral_final<-left_join(carol2,pred_total,by=c("Year","ATM","serovar","matrix"))
-
-
-ggplot(geral_final,aes(x=Year,y=Med_MIC,col=serovar))+
-   theme_minimal()+
-   theme(text=element_text(size=21))+
-   facet_grid(matrix~ATM)+
+ggplot(carol_coli,aes(y=med_coli,x=ano1,color=sorovar))+
+   facet_grid(~material)+
    geom_jitter()+
-   geom_line(aes(x=Year,y = MIC), size = 1)+
-   scale_x_continuous(breaks = seq(0,16,2))+
-   xlab("Year")
+   geom_line(data = carol_coli, aes(x = ano1, y = pred))
+   
 
+
+
+#################
+# Ciprofoxacina #
+################
+
+
+carol_cipro<-subset(carol,id != 296 & id != 8 & id != 254)
+carol_cipro$max_cipro<-ifelse(carol_cipro$max_cipro=="Inf"," ",as.numeric(carol$max_cipro))
+carol_cipro$max_cipro<-as.numeric(carol_cipro$max_cipro)
+
+
+mod2<-survreg(Surv(time=min_cipro,time2=max_cipro,type="interval2")~
+                 ano:sorovar:material+sorovar+material,data=carol_cipro,
+              cluster=projeto,dist="exponential")
+s.mod2<-summary(mod2)
+
+carol_cipro$pred<-predict(mod2)
+
+ggplot(carol_cipro,aes(y=med_cipro,x=ano1,color=sorovar))+
+   facet_grid(~material)+
+   geom_jitter()+
+   geom_line(data = carol_cipro, aes(x = ano1, y = pred))
+
+
+###############
+# Ceftazidime #
+###############
+
+carol_ceftaz<-subset(carol,id != 130 & id != 296)
+
+
+mod3<-survreg(Surv(time=min_ceftaz,time2=max_ceftaz,type="interval2")~ano:sorovar:material+sorovar+material,
+              cluster=projeto,data=carol_ceftaz,dist="exponential")
+s.mod3<-summary(mod3)
+
+carol_ceftaz$pred<-predict(mod3)
+
+ggplot(carol_ceftaz,aes(y=med_ceftaz,x=ano1,color=sorovar))+
+   facet_grid(~material)+
+   geom_jitter()+
+   geom_line(data = carol_ceftaz, aes(x = ano1, y = pred))
+
+#############
+# Ceftaxime #
+#############
+
+carol_cefo<-subset(carol,id != 113 & id!=250 & id!=82 & id != 296)
+
+mod4<-survreg(Surv(time=min_cefo,time2=max_cefo,type="interval2")~ano:sorovar:material+sorovar+material,
+              cluster=projeto,data=carol_cefo,dist="exponential")
+s.mod4<-summary(mod4)
+
+
+carol_cefo$pred<-predict(mod4)
+
+ggplot(carol_cefo,aes(y=med_cefo,x=ano1,color=sorovar))+
+   facet_grid(~material)+
+   geom_jitter()+
+   geom_line(data = carol_cefo, aes(x = ano1, y = pred))
+
+
+
+## All plots together
+
+#Creating a label for ATB and crrecting names of variables
+
+carol_cefo$Atb<-rep("Cefotaxime",dim(carol_cefo)[1])
+carol_cefo<-carol_cefo[,c(1:6,25,27,28)]
+colnames(carol_cefo)[7]<-"med"
+
+carol_ceftaz$Atb<-rep("Ceftazidime",dim(carol_ceftaz)[1])
+carol_ceftaz<-carol_ceftaz[,c(1:6,21,27,28)]
+colnames(carol_ceftaz)[7]<-"med"
+
+carol_cipro$Atb<-rep("Ciprofloxacin",dim(carol_cipro)[1])
+carol_cipro<-carol_cipro[,c(1:6,17,27,28)]
+colnames(carol_cipro)[7]<-"med"
+
+
+carol_coli$Atb<-rep("Colistin",dim(carol_coli)[1])
+carol_coli<-carol_coli[,c(1:6,13,27,28)]
+colnames(carol_coli)[7]<-"med"
+
+
+plot_geral<-rbind.data.frame(carol_cefo,
+                             carol_ceftaz,
+                             carol_cipro
+                             ,carol_coli)
+
+plot_geral$sorovar<-ifelse(plot_geral$sorovar=="Typh","Typhimurium",plot_geral$sorovar)
+
+plot_geral$Atb<- factor(plot_geral$Atb,      # Reordering group factor levels
+                         levels = c("Ciprofloxacin", "Colistin", "Ceftazidime", "Cefotaxime"))
+
+mat.labs <- c("Animal", "Food")
+names(mat.labs) <- c("Carc", "Food")
+
+ggplot(plot_geral,aes(x=ano,y=med,col=sorovar))+
+   theme_minimal()+
+   theme(text=element_text(size=20))+
+   facet_grid(Atb~material,scales = "free_y",labeller=labeller(material=mat.labs) )+
+   geom_jitter()+
+   geom_line(data = plot_geral, aes(x = ano, y = pred),size=1)+
+   scale_x_continuous(breaks = seq(0,15,2))+
+   labs(x ="Year", y = "MIC (mg/L)")+
+   scale_color_discrete(name = "Serovar",
+                      labels = c("Derby", "Typhimurium"))+
+   theme(panel.spacing.x = unit(1, "lines"))+
+   theme(panel.spacing.y = unit(1.5, "lines"))
+ggsave(here("Figures",'MIC.png'), dpi = 300, height = 10, width = 15, unit = 'in')
+
+
+#Export tables
+
+final_res<-list(
+coli=round(cbind(s.mod1$table[,c(1,5)],confint(mod1)),2),
+cipro=round(cbind(s.mod2$table[,c(1,5)],confint(mod2)),2),
+ceftaz=round(cbind(s.mod3$table[,c(1,5)],confint(mod3)),2),
+cefo=round(cbind(s.mod4$table[,c(1,5)],confint(mod4)),2)
+)
+
+
+sink(here("Outputs","MIC_reg.txt"))
+print(final_res)
+sink() 
