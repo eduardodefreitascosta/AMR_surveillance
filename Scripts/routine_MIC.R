@@ -111,7 +111,6 @@ carol_cipro<-subset(carol,id != 296 & id != 8 & id != 254)
 carol_cipro$max_cipro<-ifelse(carol_cipro$max_cipro=="Inf"," ",as.numeric(carol$max_cipro))
 carol_cipro$max_cipro<-as.numeric(carol_cipro$max_cipro)
 
-
 mod2<-survreg(Surv(time=min_cipro,time2=max_cipro,type="interval2")~
                  ano:sorovar:material+sorovar+material,data=carol_cipro,
               cluster=projeto,dist="exponential")
