@@ -21,7 +21,6 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 
 #Creating directories
-
 dir.create(here("Figures"),showWarnings = F)
 dir.create(here("Outputs"),showWarnings = F)
 
