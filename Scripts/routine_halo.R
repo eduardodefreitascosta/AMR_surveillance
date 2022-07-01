@@ -160,7 +160,7 @@ ggplot(pred_final1,aes(x=Ano2,y=Halo,col=Sorovar))+
   scale_color_discrete(name = "Serovar", labels = c("Derby", "Typhimurium"))+
   theme(panel.spacing.x = unit(1, "lines"))+
   theme(panel.spacing.y = unit(1.5, "lines"))
-ggsave(here("Figures",'Halo.png'), dpi = 300, height = 10, width = 15, unit = 'in')
+ggsave(here("Figures",'Halo.png'), dpi = 300, height = 10, width = 15, unit = 'in',bg="white")
 
 #Export tables
 

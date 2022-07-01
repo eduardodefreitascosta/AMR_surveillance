@@ -209,7 +209,7 @@ ggplot(plot_geral,aes(x=ano,y=med,col=sorovar))+
                       labels = c("Derby", "Typhimurium"))+
    theme(panel.spacing.x = unit(1, "lines"))+
    theme(panel.spacing.y = unit(1.5, "lines"))
-ggsave(here("Figures",'MIC.png'), dpi = 300, height = 10, width = 15, unit = 'in')
+ggsave(here("Figures",'MIC.png'), dpi = 300, height = 10, width = 15, unit = 'in',bg="white")
 
 
 #Export tables
