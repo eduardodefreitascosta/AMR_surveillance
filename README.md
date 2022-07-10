@@ -3,7 +3,7 @@
 
 # Description: 
 
-This time series study on the halo diameter and MIC of susceptible *Salmonella* spp. (Typhimurium and Derby) isolates obtained during 16 year (different master and doctorate projects) from pig chain production in BR. Samples are from carcasses and food. 
+This time series study on the halo diameter and MIC of susceptible *Salmonella* spp. (Typhimurium and Derby) isolates obtained during 16 year (different master and doctorate projects) from pig chain production in Brazil. Samples are from animal and food. 
 
 :chart: :microbe: :pill: :pig:
 The results are published in a peer-reviewed paper in *xx* journal.
