@@ -10,7 +10,7 @@ The results are published in a peer-reviewed paper in *xx* journal.
 
 
 # Authors: 
-Caroline Pissetti; Eduardo de Freitas Costa; and Marisa Cardoso.
+Caroline Pissetti; Eduardo de Freitas Costa; Karoline Silva Zenato; and Marisa Cardoso.
 
 
 ## To run the analysis: 
