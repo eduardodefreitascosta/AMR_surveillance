@@ -162,6 +162,26 @@ ggplot(pred_final1,aes(x=Ano2,y=Halo,col=Sorovar))+
   theme(panel.spacing.y = unit(1.5, "lines"))
 ggsave(here("Figures",'Halo.png'), dpi = 300, height = 10, width = 15, unit = 'in',bg="white")
 
+
+
+
+ggplot(pred_final1,aes(x=Ano2,y=Halo,col=Sorovar))+
+  theme_minimal()+
+  theme(text=element_text(size=20))+
+  facet_grid(ATM~Material,scales = "free_y",labeller=labeller(Material=mat.labs) )+
+  geom_jitter()+
+  geom_line(data = pred_final2, aes(x = Ano2, y = pred),size=1)+
+  scale_x_continuous(breaks = seq(0,15,2))+
+  labs(x ="Year", y = "Halo diameter (mm)")+
+  scale_color_discrete(name = "Serovar", labels = c("Derby", "Typhimurium"))+
+  theme(panel.spacing.x = unit(1, "lines"))+
+  theme(panel.spacing.y = unit(1.5, "lines"))
+ggsave(here("Figures",'Halo_1.png'), dpi = 300, height = 10, width = 15, unit = 'in',bg="white")
+
+
+
+
+
 #Export tables
 
 s.mod1<-summary(mod1)
